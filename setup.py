@@ -1,6 +1,6 @@
 import setuptools
 
-with open("README.md", "r") as fh:
+with open("README.rst", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
@@ -10,7 +10,7 @@ setuptools.setup(
     author_email="brandonmpace@gmail.com",
     description="A logger manager for Python programs",
     long_description=long_description,
-    long_description_content_type="text/markdown",
+    long_description_content_type="text/x-rst",
     keywords="debug logging logger level control manager",
     license="GNU Lesser General Public License v3 or later",
     platforms=['any'],
