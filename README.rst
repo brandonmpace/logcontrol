@@ -9,6 +9,7 @@ Original use case:
   * Python GUI program containing many packages and modules  
   * Each source file that logs creates a proper logger for use within that file
     * e.g. logger = logging.getLogger(\_\_name__)
+
     * This allows a good logging hierarchy for control at a central point  
   * I wanted to simplify enabling debug level for specific packages or groups  
   
