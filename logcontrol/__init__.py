@@ -29,4 +29,11 @@ __status__ = "Development"
 __version__ = "0.0.1"
 
 
-from .loggers import add_handler, disable_propagation, enable_propagation, group_names, log_to_console, register_logger, set_level, set_log_file
+# Items to add loggers and handlers
+from .loggers import add_handler, log_to_console, register_logger, set_log_file
+
+# Items to toggle logger settings
+from .loggers import disable_propagation, enable_propagation, set_level
+
+# Information about groups
+from .loggers import group_level, group_level_name, group_level_names, group_levels, group_names

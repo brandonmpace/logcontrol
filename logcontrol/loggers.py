@@ -93,12 +93,47 @@ def enable_propagation(group: str):
         root_logger.debug(f'propagation enabled for logger group "{group}"')
 
 
+def group_level(group: str) -> int:
+    """
+    Get the integer log level for a group
+    """
+    with logger_lock:
+        validate_group_exists(group)
+        return group_log_levels[group]
+
+
+def group_level_name(group: str) -> int:
+    """
+    Get the string log level name for a group
+    """
+    with logger_lock:
+        validate_group_exists(group)
+        return logging.getLevelName(group_log_levels[group])
+
+
+def group_levels() -> Dict[str, int]:
+    """
+    Get a dictionary with group names as keys and the integer levels as values
+    """
+    with logger_lock:
+        return group_log_levels.copy()
+
+
+def group_level_names() -> Dict[str, str]:
+    """
+    Get a dictionary with group names as keys and string level name as values
+    This can be useful for populating a debug options window that allows configuring the different groups.
+    """
+    with logger_lock:
+        return {group: logging.getLevelName(level) for group, level in group_log_levels.items()}
+
+
 def group_names() -> List[str]:
     """
     Get a sorted list of group names that have been added
-    This can be useful for populating a debug options window that allows configuring the different groups.
     """
-    return sorted([group for group in logger_groups])
+    with logger_lock:
+        return sorted([group for group in logger_groups])
 
 
 def log_to_console(group: str = '', fmt: str = None, datefmt: str = None):
