@@ -142,6 +142,8 @@ def register_logger(logger: logging.Logger, group: str):
 
         if group in group_log_levels:
             logger.setLevel(group_log_levels[group])
+        else:
+            group_log_levels[group] = logger.getEffectiveLevel()
 
         if group in group_handlers:
             for handler in group_handlers[group]:
