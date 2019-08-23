@@ -52,3 +52,4 @@ Usage:
 
         # You can get a list of group names (good for populating a debug/log control popup):
         logcontrol.group_names()
+
