@@ -124,10 +124,10 @@ def register_logger(logger: logging.Logger, group: str):
     """
     Add a logger to be controlled. The group name can be a user-friendly one if you wish.
     """
-    if (not logger) or (not isinstance(logger, logging.Logger)):
+    if not (logger and isinstance(logger, logging.Logger)):
         raise ValueError(f'unable to register invalid object: {logger}')
-    elif not group:
-        raise ValueError('a valid group name is required')
+    elif not (group and isinstance(group, str)):
+        raise ValueError('a valid group name string is required')
 
     with logger_lock:
         if logger in loggers:
