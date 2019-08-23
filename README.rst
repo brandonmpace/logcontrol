@@ -50,6 +50,6 @@ Usage:
         # This would automatically set DEBUG level and attach the console logging handler:
         logcontrol.register_logger(anotherpackage.module.logger, group='Other Package')
 
-        # You can get a list of group names (good for populating a debug/log control popup):
-        logcontrol.group_names()
+        # You can get a dict of group names with level names (good for populating a debug/log control popup):
+        logcontrol.group_level_names()
 
