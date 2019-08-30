@@ -219,6 +219,7 @@ def set_level(level: Union[int, str], group: str = ''):
         with logger_lock:
             for logger in logger_groups[group]:
                 logger.setLevel(level)
+            group_log_levels[group] = level
             _logger.debug(f'log level set to "{level_name}" for logger group "{group}"')
     else:
         root_logger.setLevel(level)
