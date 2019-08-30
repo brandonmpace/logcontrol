@@ -25,10 +25,11 @@ import logging
 import threading
 
 from logging.handlers import RotatingFileHandler
-from typing import Dict, List, Set
+from typing import Dict, List, Set, Union
 from .constants import CONSOLE_HANDLER_NAME, DEFAULT_CONSOLE_LOG_FORMAT, DEFAULT_LOG_FORMAT
 
 
+_logger = logging.getLogger(__name__)
 group_handlers: Dict[str, Set[logging.Handler]] = {}
 group_log_levels: Dict[str, int] = {}
 group_propagation: Dict[str, bool] = {}
@@ -46,7 +47,7 @@ def add_handler(handler: logging.Handler, group: str = ''):
         with logger_lock:
             for logger in logger_groups[group]:
                 if handler in logger.handlers:
-                    root_logger.warning(f'handler "{handler.name}" already enabled for the logger "{logger.name}"')
+                    _logger.warning(f'handler "{handler.name}" already enabled for the logger "{logger.name}"')
                     continue
                 else:
                     logger.addHandler(handler)
@@ -56,13 +57,36 @@ def add_handler(handler: logging.Handler, group: str = ''):
             else:
                 group_handlers[group] = {handler}
 
-            root_logger.debug(f'handler "{handler.name}" added to logger group {group}')
+            _logger.debug(f'handler "{handler.name}" added to logger group {group}')
     else:
         if handler in root_logger.handlers:
-            root_logger.warning(f'handler "{handler.name}" already enabled for the root logger')
+            _logger.warning(f'handler "{handler.name}" already enabled for the root logger')
         else:
             root_logger.addHandler(handler)
-            root_logger.debug(f'handler "{handler.name}" added to the root logger')
+            _logger.debug(f'handler "{handler.name}" added to the root logger')
+
+
+def current_level(group: str = '') -> int:
+    """
+    Get current integer log level for root logger or a specific group of loggers.
+    If no group is passed, the level is configured for the root logger.
+    """
+    if group:
+        validate_group_exists(group)
+        level = group_log_levels[group]
+    else:
+        level = root_logger.level
+
+    return level
+
+
+def current_level_name(group: str = '') -> str:
+    """
+    Get current string log level name for root logger or a specific group of loggers.
+    If no group is passed, the level is configured for the root logger.
+    """
+    level = current_level(group)
+    return logging.getLevelName(level)
 
 
 def disable_propagation(group: str):
@@ -76,7 +100,7 @@ def disable_propagation(group: str):
         for logger in logger_groups[group]:
             logger.propagate = False
         group_propagation[group] = False
-        root_logger.debug(f'propagation disabled for logger group "{group}"')
+        _logger.debug(f'propagation disabled for logger group "{group}"')
 
 
 def enable_propagation(group: str):
@@ -90,25 +114,7 @@ def enable_propagation(group: str):
         for logger in logger_groups[group]:
             logger.propagate = True
         group_propagation[group] = True
-        root_logger.debug(f'propagation enabled for logger group "{group}"')
-
-
-def group_level(group: str) -> int:
-    """
-    Get the integer log level for a group
-    """
-    with logger_lock:
-        validate_group_exists(group)
-        return group_log_levels[group]
-
-
-def group_level_name(group: str) -> int:
-    """
-    Get the string log level name for a group
-    """
-    with logger_lock:
-        validate_group_exists(group)
-        return logging.getLevelName(group_log_levels[group])
+        _logger.debug(f'propagation enabled for logger group "{group}"')
 
 
 def group_levels() -> Dict[str, int]:
@@ -190,13 +196,22 @@ def register_logger(logger: logging.Logger, group: str):
             logger.propagate = group_propagation[group]
 
 
-def set_level(level: int, group: str = ''):
+def set_level(level: Union[int, str], group: str = ''):
     """
     Set log level for root logger or a specific group of loggers.
     level is as seen in Python's logging module documentation (e.g. logging.DEBUG, logging.WARNING, logging.INFO)
-    group name is optional. If no group is passed, the level is configured for the root logger.
+    The string names of built-in log levels are also accepted, but using the integer constants is recommended.
+    If no group is passed, the level is configured for the root logger.
     """
-    level_name = logging.getLevelName(level)
+    if isinstance(level, int):
+        level_name = logging.getLevelName(level)
+    elif isinstance(level, str):
+        level_name = level
+        level = logging.getLevelName(level_name)
+        if isinstance(level, str):
+            raise ValueError(f'Log level "{level_name}" does not match any logging module built-in level')
+    else:
+        raise TypeError(f'Expected int or str, got type "{type(level)}" with value "{level}"')
 
     if group:
         validate_group_exists(group)
@@ -204,10 +219,10 @@ def set_level(level: int, group: str = ''):
         with logger_lock:
             for logger in logger_groups[group]:
                 logger.setLevel(level)
-            root_logger.debug(f'log level set to "{level_name}" for logger group "{group}"')
+            _logger.debug(f'log level set to "{level_name}" for logger group "{group}"')
     else:
         root_logger.setLevel(level)
-        root_logger.debug(f'log level set to "{level_name}"')
+        _logger.debug(f'log level set to "{level_name}"')
 
 
 def set_log_file(file_path: str, group: str = '', fmt: str = None, datefmt: str = None, max_size: int = 5242880, roll_count: int = 9):

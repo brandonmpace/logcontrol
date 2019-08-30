@@ -29,11 +29,20 @@ __status__ = "Development"
 __version__ = "0.0.2"
 
 
+import logging
+
+from .constants import DEBUG, INFO, WARNING, ERROR, CRITICAL, log_level_integers, log_level_strings
+
 # Items to add loggers and handlers
 from .loggers import add_handler, log_to_console, register_logger, set_log_file
 
 # Items to toggle logger settings
 from .loggers import disable_propagation, enable_propagation, set_level
 
+# Items to get current level of specific group or root logger
+from .loggers import current_level, current_level_name
+
 # Information about groups
-from .loggers import group_level, group_level_name, group_level_names, group_levels, group_names
+from .loggers import group_level_names, group_levels, group_names
+
+logger = logging.getLogger(__name__)

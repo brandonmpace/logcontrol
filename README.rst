@@ -53,3 +53,9 @@ Usage:
         # You can get a dict of group names with level names (good for populating a debug/log control popup):
         logcontrol.group_level_names()
 
+        # For convenience, the predefined log levels are available:
+        #     - as integers via logcontrol.log_level_integers
+        #     - as strings via logcontrol.log_level_strings
+        #
+        # This makes it easy to display them in a combo box for users to choose.
+

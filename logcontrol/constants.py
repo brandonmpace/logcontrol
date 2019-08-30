@@ -21,6 +21,18 @@
 """module to hold constants for use in the package"""
 
 
+import logging
+
+log_level_integers = frozenset((logging.DEBUG, logging.INFO, logging.WARNING, logging.ERROR, logging.CRITICAL))
+log_level_strings = frozenset([logging.getLevelName(level) for level in log_level_integers])
+
+DEBUG = logging.DEBUG
+INFO = logging.INFO
+WARNING = logging.WARNING
+ERROR = logging.ERROR
+CRITICAL = logging.CRITICAL
+
+
 pid_tid_tag = '[%(process)d %(thread)d]'
 time_tag = '%(asctime)s'
 level_tag = '%(levelname)s'
