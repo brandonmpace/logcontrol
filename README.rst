@@ -1,5 +1,4 @@
-logcontrol:
-A logger manager for Python programs
+**logcontrol:** A logger manager for Python programs
 
 It provides:  
   * Centralized control of log level (per-group)  

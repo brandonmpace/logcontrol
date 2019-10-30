@@ -5,7 +5,7 @@ with open("README.rst", "r") as fh:
 
 setuptools.setup(
     name="logcontrol",
-    version="0.0.3",
+    version="0.0.4",
     author="Brandon M. Pace",
     author_email="brandonmpace@gmail.com",
     description="A logger manager for Python programs",
