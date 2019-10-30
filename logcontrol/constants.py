@@ -23,8 +23,8 @@
 
 import logging
 
-log_level_integers = frozenset((logging.DEBUG, logging.INFO, logging.WARNING, logging.ERROR, logging.CRITICAL))
-log_level_strings = frozenset([logging.getLevelName(level) for level in log_level_integers])
+log_level_integers = (logging.DEBUG, logging.INFO, logging.WARNING, logging.ERROR, logging.CRITICAL)
+log_level_strings = tuple([logging.getLevelName(level) for level in log_level_integers])
 
 DEBUG = logging.DEBUG
 INFO = logging.INFO
