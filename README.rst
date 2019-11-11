@@ -2,8 +2,7 @@
 
 It provides:  
   * Centralized control of log level (per-group)  
-  * Logging for exceptions and excessive runtime  
-  
+
 Original use case:  
   * Python GUI program containing many packages and modules  
   * Each source file that logs creates a proper logger for use within that file
