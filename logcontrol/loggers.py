@@ -142,7 +142,7 @@ def group_names() -> List[str]:
         return sorted([group for group in logger_groups])
 
 
-def log_to_console(group: str = '', fmt: str = None, datefmt: str = None):
+def log_to_console(group: str = '', fmt: str = None, datefmt: str = None, level: int = None):
     """
     Enable printing log items to the console
     If a group name is passed, then loggers in that group will log to console.
@@ -157,6 +157,8 @@ def log_to_console(group: str = '', fmt: str = None, datefmt: str = None):
     console_handler = logging.StreamHandler()
     console_handler.name = CONSOLE_HANDLER_NAME
     console_handler.setFormatter(formatter)
+    if isinstance(level, int):
+        console_handler.level = level
 
     add_handler(console_handler, group=group)
 
