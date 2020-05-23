@@ -40,7 +40,7 @@ loggers: Set[logging.Logger] = set()
 root_logger = logging.getLogger()
 
 
-def add_handler(handler: logging.Handler, group: str = ''):
+def add_handler(handler: logging.Handler, group: str = ""):
     """Add a log handler to a group of loggers (or the root logger if no group provided)"""
     if group:
         validate_group_exists(group)
@@ -48,7 +48,7 @@ def add_handler(handler: logging.Handler, group: str = ''):
         with logger_lock:
             for logger in logger_groups[group]:
                 if handler in logger.handlers:
-                    _logger.warning(f'handler "{handler.name}" already enabled for the logger "{logger.name}"')
+                    _logger.warning(f"handler '{handler.name}' already enabled for the logger '{logger.name}'")
                     continue
                 else:
                     logger.addHandler(handler)
@@ -58,16 +58,16 @@ def add_handler(handler: logging.Handler, group: str = ''):
             else:
                 group_handlers[group] = {handler}
 
-            _logger.debug(f'handler "{handler.name}" added to logger group {group}')
+            _logger.debug(f"handler '{handler.name}' added to logger group {group}")
     else:
         if handler in root_logger.handlers:
-            _logger.warning(f'handler "{handler.name}" already enabled for the root logger')
+            _logger.warning(f"handler '{handler.name}' already enabled for the root logger")
         else:
             root_logger.addHandler(handler)
-            _logger.debug(f'handler "{handler.name}" added to the root logger')
+            _logger.debug(f"handler '{handler.name}' added to the root logger")
 
 
-def current_level(group: str = '') -> int:
+def current_level(group: str = "") -> int:
     """
     Get current integer log level for root logger or a specific group of loggers.
     If no group is passed, the level is configured for the root logger.
@@ -81,7 +81,7 @@ def current_level(group: str = '') -> int:
     return level
 
 
-def current_level_name(group: str = '') -> str:
+def current_level_name(group: str = "") -> str:
     """
     Get current string log level name for root logger or a specific group of loggers.
     If no group is passed, the level is configured for the root logger.
@@ -101,7 +101,7 @@ def disable_propagation(group: str):
         for logger in logger_groups[group]:
             logger.propagate = False
         group_propagation[group] = False
-        _logger.debug(f'propagation disabled for logger group "{group}"')
+        _logger.debug(f"propagation disabled for logger group '{group}'")
 
 
 def enable_propagation(group: str):
@@ -115,7 +115,7 @@ def enable_propagation(group: str):
         for logger in logger_groups[group]:
             logger.propagate = True
         group_propagation[group] = True
-        _logger.debug(f'propagation enabled for logger group "{group}"')
+        _logger.debug(f"propagation enabled for logger group '{group}'")
 
 
 def group_levels() -> Dict[str, int]:
@@ -143,7 +143,7 @@ def group_names() -> List[str]:
         return sorted([group for group in logger_groups])
 
 
-def log_to_console(group: str = '', fmt: str = None, datefmt: str = None, level: int = None):
+def log_to_console(group: str = "", fmt: str = None, datefmt: str = None, level: int = None):
     """
     Enable printing log items to the console
     If a group name is passed, then loggers in that group will log to console.
@@ -171,7 +171,7 @@ def register_logger(logger: logging.Logger, group: str):
     validate_logger_object(logger)
     with logger_lock:
         if logger in loggers:
-            raise ValueError(f'logger already registered: {logger}')
+            raise ValueError(f"logger already registered: {logger}")
 
         loggers.add(logger)
 
@@ -196,7 +196,7 @@ def register_logger(logger: logging.Logger, group: str):
             logger.propagate = group_propagation[group]
 
 
-def set_level(level: Union[int, str], group: str = ''):
+def set_level(level: Union[int, str], group: str = ""):
     """
     Set log level for root logger or a specific group of loggers.
     level is as seen in Python's logging module documentation (e.g. logging.DEBUG, logging.WARNING, logging.INFO)
@@ -209,9 +209,9 @@ def set_level(level: Union[int, str], group: str = ''):
         level_name = level
         level = logging.getLevelName(level_name)
         if isinstance(level, str):
-            raise ValueError(f'Log level "{level_name}" does not match any logging module built-in level')
+            raise ValueError(f"Log level '{level_name}' does not match any logging module built-in level")
     else:
-        raise TypeError(f'Expected int or str, got type "{type(level)}" with value "{level}"')
+        raise TypeError(f"Expected int or str, got type '{type(level)}' with value '{level}'")
 
     if group:
         validate_group_exists(group)
@@ -220,13 +220,13 @@ def set_level(level: Union[int, str], group: str = ''):
             for logger in logger_groups[group]:
                 logger.setLevel(level)
             group_log_levels[group] = level
-            _logger.debug(f'log level set to "{level_name}" for logger group "{group}"')
+            _logger.debug(f"log level set to '{level_name}' for logger group '{group}'")
     else:
         root_logger.setLevel(level)
-        _logger.debug(f'log level set to "{level_name}"')
+        _logger.debug(f"log level set to '{level_name}'")
 
 
-def set_log_file(file_path: str, group: str = '', fmt: str = None, datefmt: str = None, max_size: int = 5242880, roll_count: int = 9):
+def set_log_file(file_path: str, group: str = "", fmt: str = None, datefmt: str = None, max_size: int = 5242880, roll_count: int = 9):
     """
     Set the log file for the root logger (or group, if given)
 
@@ -261,7 +261,7 @@ def validate_file_path(filepath: str):
 def validate_group_exists(group: str):
     """Internal function to validate that a group has been added"""
     if group not in logger_groups:
-        raise ValueError(f'no logger group with name: {group}')
+        raise ValueError(f"no logger group with name: '{group}'")
 
 
 def validate_group_name(name: str):
