@@ -23,7 +23,6 @@ Usage:
         import otherpackage
         import anotherpackage
 
-        # import logging for easy access to log levels
         import logging
         import logcontrol
 
