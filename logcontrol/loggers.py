@@ -168,11 +168,7 @@ def register_logger(logger: logging.Logger, group: str):
     """
     Add a logger to be controlled. The group name can be a user-friendly one if you wish.
     """
-    if not (logger and isinstance(logger, logging.Logger)):
-        raise ValueError(f'unable to register invalid object: {logger}')
-    elif not (group and isinstance(group, str)):
-        raise ValueError('a valid group name string is required')
-
+    validate_logger_object(logger)
     with logger_lock:
         if logger in loggers:
             raise ValueError(f'logger already registered: {logger}')
@@ -182,6 +178,7 @@ def register_logger(logger: logging.Logger, group: str):
         if group in logger_groups:
             logger_groups[group].add(logger)
         else:
+            validate_group_name(group)
             logger_groups[group] = {logger}
 
         if group in group_log_levels:
@@ -249,12 +246,6 @@ def set_log_file(file_path: str, group: str = '', fmt: str = None, datefmt: str 
     add_handler(rotation_handler, group=group)
 
 
-def validate_group_exists(group: str):
-    """Internal function to validate that a group has been added"""
-    if group not in logger_groups:
-        raise ValueError(f'no logger group with name: {group}')
-
-
 def validate_file_path(filepath: str):
     """Internal function to validate that a provided path is good for logging"""
     if os.path.isdir(filepath):
@@ -265,3 +256,23 @@ def validate_file_path(filepath: str):
         raise ValueError(f"Provided filepath does not contain a valid directory. Path: '{filepath}'")
     elif not filename:  # should be caught by the first isdir above, but just in case..
         raise ValueError(f"Provided filepath does not have any filename part. Path: '{filepath}'")
+
+
+def validate_group_exists(group: str):
+    """Internal function to validate that a group has been added"""
+    if group not in logger_groups:
+        raise ValueError(f'no logger group with name: {group}')
+
+
+def validate_group_name(name: str):
+    """Internal function to make sure any new group names are valid"""
+    if isinstance(name, str):
+        if not name:
+            raise ValueError(f"Group name must not be empty string")
+    else:
+        raise TypeError(f"Group name must be str, got: '{type(name)}'")
+
+
+def validate_logger_object(logger: logging.Logger):
+    if not isinstance(logger, logging.Logger):
+        raise TypeError(f"Expected logging.Logger, got: '{type(logger)}'")
