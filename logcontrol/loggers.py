@@ -22,6 +22,7 @@
 
 
 import logging
+import os
 import threading
 
 from logging.handlers import RotatingFileHandler
@@ -240,6 +241,7 @@ def set_log_file(file_path: str, group: str = '', fmt: str = None, datefmt: str 
     The max size is in bytes
     The roll count determines how many files beyond the current log are kept (e.g. log_file.1, log_file.2, etc.)
     """
+    validate_file_path(file_path)
     format_string = (fmt if fmt else DEFAULT_LOG_FORMAT)
     formatter = logging.Formatter(fmt=format_string, datefmt=datefmt)
     rotation_handler = RotatingFileHandler(file_path, maxBytes=max_size, backupCount=roll_count)
@@ -251,3 +253,15 @@ def validate_group_exists(group: str):
     """Internal function to validate that a group has been added"""
     if group not in logger_groups:
         raise ValueError(f'no logger group with name: {group}')
+
+
+def validate_file_path(filepath: str):
+    """Internal function to validate that a provided path is good for logging"""
+    if os.path.isdir(filepath):
+        raise ValueError(f"Provided filepath is a directory and not a file. Path: '{filepath}'")
+
+    directory, filename = os.path.split(filepath)
+    if not os.path.isdir(directory):
+        raise ValueError(f"Provided filepath does not contain a valid directory. Path: '{filepath}'")
+    elif not filename:  # should be caught by the first isdir above, but just in case..
+        raise ValueError(f"Provided filepath does not have any filename part. Path: '{filepath}'")
