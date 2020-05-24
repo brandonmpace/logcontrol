@@ -71,17 +71,17 @@ class LoggerGroup:
         return "%s(%r)" % (self.__class__.__name__, self.name)
 
     def add_handler(self, handler: logging.Handler):
-        validate_handler_object(handler)
         with self._lock:
+            validate_handler_object(handler)
             for logger in self:
                 logger.addHandler(handler)
 
             self._handlers.add(handler)
 
             if self._is_root:
-                _logger.debug(f"handler '{handler.name}' added to root logger")
+                _logger.debug(f"handler '{handler}' added to root logger")
             else:
-                _logger.debug(f"handler '{handler.name}' added to logger group {self._name}")
+                _logger.debug(f"handler '{handler}' added to logger group {self._name}")
 
     def add_log_file(self, file_path: str, fmt: str = None, datefmt: str = None, max_size: int = 5242880, roll_count: int = 9):
         with self._lock:
@@ -129,14 +129,14 @@ class LoggerGroup:
                 _logger.debug(f"propagation disabled for logger group '{self._name}'")
                 self._propagate = False
             else:
-                _logger.debug(f"propagation already disabled for group '{self._name}'")
+                _logger.warning(f"propagation already disabled for group '{self._name}'")
 
     def enable_propagation(self):
         if self._is_root:
             raise RuntimeError(f"irrelevant modification to root logger")
         with self._lock:
             if self._propagate:
-                _logger.debug(f"propagation already enabled for group '{self._name}'")
+                _logger.warning(f"propagation already enabled for group '{self._name}'")
             else:
                 for logger in self:
                     logger.propagate = True
@@ -172,18 +172,18 @@ class LoggerGroup:
         return self._console_handler is not None
 
     @property
-    def name(self):
+    def name(self) -> str:
         return self._name
 
     @property
-    def propagate(self):
+    def propagate(self) -> bool:
         return self._propagate
 
     def remove_handler(self, handler: logging.Handler):
         validate_handler_object(handler)
         with self._lock:
             if handler not in self:
-                _logger.warning(f"handler '{handler.name}' not found")
+                _logger.warning(f"handler '{handler}' not found")
                 return
 
             for logger in self:
@@ -192,9 +192,9 @@ class LoggerGroup:
             self._handlers.discard(handler)
 
             if self._is_root:
-                _logger.debug(f"handler '{handler.name}' removed from root logger")
+                _logger.debug(f"handler '{handler}' removed from root logger")
             else:
-                _logger.debug(f"handler '{handler.name}' removed from logger group {self._name}")
+                _logger.debug(f"handler '{handler}' removed from logger group {self._name}")
 
     def remove_log_file(self, file_path: str):
         with self._lock:
@@ -221,7 +221,7 @@ class LoggerGroup:
         with self._lock:
             for logger in self:
                 logger.setLevel(level)
-
+            self._level = level
             if self._is_root:
                 _logger.debug(f"log level set to '{level_name}'")
             else:
