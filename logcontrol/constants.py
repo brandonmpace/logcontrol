@@ -32,6 +32,7 @@ WARNING = logging.WARNING
 ERROR = logging.ERROR
 CRITICAL = logging.CRITICAL
 
+ROOT_LOGGER = logging.getLogger()
 
 pid_tid_tag = "[%(process)d %(thread)d]"
 time_tag = "%(asctime)s"
@@ -43,3 +44,5 @@ log_message_tag = "%(message)s"
 CONSOLE_HANDLER_NAME = "console_logger_stream"
 DEFAULT_CONSOLE_LOG_FORMAT = f"{pid_tid_tag} {time_tag} ({thread_name_tag}) - [{level_tag}] {log_message_tag}"
 DEFAULT_LOG_FORMAT = f"{pid_tid_tag} {time_tag} {level_tag} - ({thread_name_tag}) - {code_line_tag} - {log_message_tag}"
+
+ROOT = "__root__"  # root logger group name (reserved)

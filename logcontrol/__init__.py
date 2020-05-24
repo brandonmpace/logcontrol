@@ -34,13 +34,13 @@ import logging
 from .constants import DEBUG, INFO, WARNING, ERROR, CRITICAL, log_level_integers, log_level_strings
 
 # Items to add loggers and handlers
-from .loggers import add_handler, log_to_console, register_logger, set_log_file
+from .loggers import add_handler, has_handler, log_to_console, register_logger, remove_handler
 
 # Items to toggle logger settings
-from .loggers import disable_propagation, enable_propagation, set_level
+from .loggers import disable_propagation, enable_propagation, remove_log_file, set_level, set_log_file
 
-# Items to get current level of specific group or root logger
-from .loggers import current_level, current_level_name
+# Items to get current configuration of specific group or root logger
+from .loggers import current_level, current_level_name, log_files, logging_to_console, propagation_enabled
 
 # Information about groups
 from .loggers import group_level_names, group_levels, group_names
