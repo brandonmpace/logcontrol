@@ -117,7 +117,9 @@ class LoggerGroup:
                 # This is the first logger in the group, will update initial group configuration
                 self._level = logger.getEffectiveLevel()
                 logger.setLevel(self._level)
-                self._propagate = logger.propagate
+                self._propagate = bool(logger.propagate)
+
+            self._loggers.add(logger)
 
     def disable_propagation(self):
         if self._is_root:
