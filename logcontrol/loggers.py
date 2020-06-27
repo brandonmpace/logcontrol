@@ -21,6 +21,7 @@
 
 
 import logging
+import os
 import threading
 
 from logging.handlers import RotatingFileHandler
@@ -82,9 +83,15 @@ class LoggerGroup:
             else:
                 _logger.debug(f"handler '{handler}' added to logger group {self._name}")
 
-    def add_log_file(self, file_path: str, fmt: str = None, datefmt: str = None, max_size: int = 5242880, roll_count: int = 9):
+    def add_log_file(self, file_path: str, fmt: str = None, datefmt: str = None, max_size: int = 5242880, roll_count: int = 9, create_dir: bool = True):
         with self._lock:
-            validate_file_path(file_path)
+            validate_file_path(file_path, dir_must_exist=(create_dir is False))
+
+            if create_dir:
+                log_dir = os.path.dirname(file_path)
+                if log_dir:
+                    os.makedirs(log_dir, exist_ok=True)
+
             if file_path in self._file_handlers:
                 if self._is_root:
                     raise ValueError(f"root logger is already logging to path '{file_path}'")
@@ -449,7 +456,7 @@ def set_level(level: Union[int, str], group: str = None):
             logger_groups[group].set_level(level)
 
 
-def set_log_file(file_path: str, group: str = None, fmt: str = None, datefmt: str = None, max_size: int = 5242880, roll_count: int = 9):
+def set_log_file(file_path: str, group: str = None, fmt: str = None, datefmt: str = None, max_size: int = 5242880, roll_count: int = 9, create_dir: bool = True):
     """
     Set the log file for the root logger (or group, if given)
 
@@ -460,6 +467,7 @@ def set_log_file(file_path: str, group: str = None, fmt: str = None, datefmt: st
     (see logging.Formatter and LogRecord attributes documentation for more information about format strings)
     The max size is in bytes
     The roll count determines how many files beyond the current log are kept (e.g. log_file.1, log_file.2, etc.)
+    If create_dir is True, the directory path will be created if it does not exist.
     """
     with logger_lock:
         if group is None:
@@ -468,7 +476,7 @@ def set_log_file(file_path: str, group: str = None, fmt: str = None, datefmt: st
             validate_group_exists(group)
             group_object = logger_groups[group]
         group_object.add_log_file(
-            file_path=file_path, fmt=fmt, datefmt=datefmt, max_size=max_size, roll_count=roll_count
+            file_path=file_path, fmt=fmt, datefmt=datefmt, max_size=max_size, roll_count=roll_count, create_dir=create_dir
         )
 
 

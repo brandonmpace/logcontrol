@@ -24,13 +24,13 @@ import logging
 import os
 
 
-def validate_file_path(filepath: str):
+def validate_file_path(filepath: str, dir_must_exist: bool = True):
     """Internal function to validate that a provided path is good for logging"""
     if os.path.isdir(filepath):
         raise ValueError(f"Provided filepath is a directory and not a file. Path: '{filepath}'")
 
     directory, filename = os.path.split(filepath)
-    if not os.path.isdir(directory):
+    if dir_must_exist and (not os.path.isdir(directory)):
         raise ValueError(f"Provided filepath does not contain a valid directory. Path: '{filepath}'")
     elif not filename:  # should be caught by the first isdir above, but just in case..
         raise ValueError(f"Provided filepath does not have any filename part. Path: '{filepath}'")
